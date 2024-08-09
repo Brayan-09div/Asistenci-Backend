@@ -90,25 +90,33 @@ const controladorAprendis = {
         }
     },
 
-    activarDesactivarAprendis: async (req, res) => {
+    activarDesactivarAprendiz: async (req, res) => {
         const { id } = req.params;
         try {
-          const aprendiz = await Aprendis.findById(id);
+            // Buscar el aprendiz por ID
+            const aprendiz = await Aprendis.findById(id);
     
-          if (!aprendiz) {
-            return res.status(404).json({ error: 'Aprendiz no encontrado' });
-          }
+            // Verificar si el aprendiz existe
+            if (!aprendiz) {
+                return res.status(404).json({ error: "Aprendiz no encontrado" });
+            }
     
-          aprendiz.activo = !aprendiz.activo;
-          const resultado = await aprendiz.save();
+            // Alternar el estado del aprendiz (activo / inactivo)
+            aprendiz.estado = aprendiz.estado === 1 ? 0 : 1;
+            await aprendiz.save();
     
-          console.log('Estado de aprendiz actualizado:', resultado);
-          res.json(resultado);
+            // Preparar el mensaje en función del nuevo estado
+            const mensaje = aprendiz.estado === 1
+                ? "Aprendiz activado correctamente"
+                : "Aprendiz desactivado correctamente";
+    
+            // Enviar la respuesta con el mensaje
+            res.json({ msg: mensaje });
         } catch (error) {
-          console.error('Error al activar/desactivar aprendiz:', error);
-          res.status(500).json({ error: 'Error al actualizar el estado del aprendiz' });
+            console.error("Error al activar/desactivar aprendiz:", error);
+            res.status(500).json({ error: "Error al activar/desactivar aprendiz" });
         }
-      }
+    }
 
 };
 

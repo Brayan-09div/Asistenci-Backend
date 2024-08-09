@@ -10,7 +10,7 @@ const router = express.Router();
 
 // POST /api/aprendices
 router.post('/', [
-    // validarJWT,
+     validarJWT,
     check('cc', 'El campo cc es obligatorio').not().isEmpty(),
     check('cc').custom(aprendicesHelper.existecc),
     check('nombre', 'El campo nombre es obligatorio').not().isEmpty(),
@@ -25,13 +25,13 @@ router.post('/', [
 
 // GET /api/aprendices/listar
 router.get('/listar', [
-    // // validarJWT,
+     validarJWT,
 ], controladorAprendis.listarAprendis);
 
 
 // DELETE /api/aprendices/eliminar/:id
 router.delete('/eliminar/:id', [
-    // validarJWT,
+    validarJWT,
     check('id', 'El ID proporcionado no es válido').isMongoId(),
     check('id').custom(aprendicesHelper.existeAprendizID),
     validarCampos
@@ -55,11 +55,11 @@ router.put('/editar/:id', [
 
 // PUT /api/aprendices/activarDesactivar/:id
 router.put('/activarDesactivar/:id', [
-    // validarJWT,
+    validarJWT,
     check('id', 'El ID proporcionado no es válido').isMongoId(),
     check('id').custom(aprendicesHelper.existeAprendizID),
     validarCampos
-], controladorAprendis.activarDesactivarAprendis);
+], controladorAprendis.activarDesactivarAprendiz);
 
 
 export default router;
