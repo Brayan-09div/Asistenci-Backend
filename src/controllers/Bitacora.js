@@ -24,7 +24,7 @@ const bitacoraController = {
     
     listarTodo: async (req, res) => {
         try {
-            const bitacoras = await Bitacora.find();
+            const bitacoras = await Bitacora.find().populate('IdAprendis');
             console.log('Lista de entradas de bitácora:', bitacoras);
             res.json(bitacoras);
         } catch (error) {

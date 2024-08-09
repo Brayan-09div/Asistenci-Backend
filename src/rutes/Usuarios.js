@@ -24,7 +24,7 @@ router.post('/login', [
 ], usuarioController.login);
 
 router.get('/listar', [
-    validarJWT
+     validarJWT,
 ], usuarioController.listarUsuarios);
 
 router.put('/editar/:id', [

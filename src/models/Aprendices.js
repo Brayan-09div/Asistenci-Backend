@@ -14,5 +14,5 @@ export default mongoose.model("Aprendices", aprendisSchema);
 // crear 
 // editar
 // lisar
-// editar
+// editarD
 // borrar
