@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Aprendis from '../models/Aprendices.js';
 import Fichas from '../models/Fichas.js';
 
@@ -45,7 +46,7 @@ const controladorAprendis = {
                 nombre,
                 email,
                 telefono,
-                IdFicha: mongoose.Types.ObjectId(IdFicha) // Convertir a ObjectId si es necesario
+                IdFicha: new mongoose.Types.ObjectId(IdFicha) 
             }, { new: true });
 
             if (!resultado) {

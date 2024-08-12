@@ -37,18 +37,30 @@ router.delete('/eliminar/:id', [
     validarCampos
 ], controladorAprendis.eliminarAprendis);
 
-// PUT /api/aprendices/editar/:id
+
 router.put('/editar/:id', [
     validarJWT,
     check('id', 'El ID proporcionado no es válido').isMongoId(),
-    check('cc', 'El campo cc es obligatorio').optional().not().isEmpty(),
-    check('cc').custom(aprendicesHelper.existecc),
-    check('nombre', 'El campo nombre es obligatorio').optional().not().isEmpty(),
-    check('email', 'El campo email es obligatorio').optional().not().isEmpty().isEmail(),
-    check('email').custom(aprendicesHelper.existeEmail),
-    check('telefono', 'El campo telefono es obligatorio').optional().not().isEmpty(),
-    check('IdFicha', 'El campo IdFicha es obligatorio').optional().not().isEmpty(),
-    check('IdFicha').custom(fichasHelper.existeFichaID),
+    
+    // Validación para cc
+    check('cc').optional().isString().withMessage('El campo cc debe ser un número')
+        .custom(aprendicesHelper.existecc),
+
+    // Validación para nombre
+    check('nombre').optional().isString().withMessage('El campo nombre debe ser una cadena')
+        .not().isEmpty().withMessage('El campo nombre no puede estar vacío'),
+
+    // Validación para email
+    check('email').optional().custom(aprendicesHelper.existeEmail),
+
+    // Validación para teléfono
+    check('telefono').optional().isString().withMessage('El campo telefono debe ser una cadena')
+        .not().isEmpty().withMessage('El campo telefono no puede estar vacío'),
+
+    // Validación para IdFicha
+    check('IdFicha').optional().isMongoId().withMessage('El campo IdFicha debe ser un ID de Mongo válido')
+        .custom(fichasHelper.existeFichaID),
+
     validarCampos
 ], controladorAprendis.editarAprendis);
 

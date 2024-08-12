@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const aprendisSchema = new mongoose.Schema({
-    cc: { type: Number, required: true, unique: true },
+    cc: { type: String, required: true, unique: true },
     nombre: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     telefono: { type: String, required: true},
