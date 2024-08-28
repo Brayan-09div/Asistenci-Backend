@@ -46,6 +46,7 @@ router.put('/editar/:id', [
     check('id', 'ID inválido').isMongoId(),
     check('id').custom(fichasHelper.existeFichaID),
     check('codigo').optional().isNumeric().withMessage('El código debe ser un número').isLength({ min: 7, max: 7 }).withMessage('El código debe ser de 7 dígitos'),
+    check('codigo').custom(fichasHelper.existeCodigo),
     check('nombre').optional().not().isEmpty().withMessage('El nombre es obligatorio'),
     validarCampos
 ], fichasController.editarFicha)

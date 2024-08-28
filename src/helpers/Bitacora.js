@@ -1,11 +1,11 @@
-import Bitacoras from "../models/Fichas.js";
+import Bitacoras from "../models/Bitacora.js";
 
 const BitacorasHelper = {
     existeBitacoraId: async (id) => {
         try {
             const existe = await Bitacoras.findById(id);
             if (!existe) {
-                throw new Error(`La ficha con ID ${id} no existe`);
+                throw new Error(`La bitacora con la ${id} no existe`);
             }
             return existe;
         } catch (error) {
