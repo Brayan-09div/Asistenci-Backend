@@ -5,11 +5,10 @@ const bitacoraController = {
     // Crear una nueva entrada de bitácora
     crearBitacora: async (req, res) => {
         const { IdAprendis, fecha, } = req.body;
-
         try {
             const nuevaBitacora = new Bitacora({
                 IdAprendis,
-                fecha,
+                fecha:Date.now(),
             });
 
             const resultado = await nuevaBitacora.save();

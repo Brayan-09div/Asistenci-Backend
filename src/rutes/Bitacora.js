@@ -14,7 +14,6 @@ router.post('/', [
     check('IdAprendis', 'El ID del Aprendiz es obligatorio').not().isEmpty(),
     check('IdAprendis', 'El ID del Aprendiz es inválido').isMongoId(),
     check('IdAprendis').custom(aprendicesHelper.existeAprendizID),
-    check('fecha', 'La fecha es obligatoria').not().isEmpty(),
     validarCampos
 ], bitacoraController.crearBitacora);
 
