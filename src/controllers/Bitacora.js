@@ -2,15 +2,24 @@ import Bitacora from '../models/Bitacora.js';
 import Aprendices from '../models/Aprendices.js';
 
 const bitacoraController = {
-    // Crear una nueva entrada de bitácora
-    crearBitacora: async (req, res) => {
-        const { IdAprendis, fecha, } = req.body;
-        try {
-            const nuevaBitacora = new Bitacora({
-                IdAprendis,
-                fecha:Date.now(),
-            });
 
+    crearBitacora: async (req, res) => {
+        const { cc, fecha } = req.body;
+        try {
+    
+            const aprendiz = await Aprendices.findOne({ cc });
+            
+            
+    
+            if (!aprendiz) {
+                return res.status(404).json({ error: 'Aprendiz no encontrado' });
+            }
+            
+            const nuevaBitacora = new Bitacora({
+                IdAprendis: aprendiz._id,
+                fecha: fecha || Date.now(),
+                estado: 'pendiente' 
+            });
             const resultado = await nuevaBitacora.save();
             console.log('Bitácora creada:', resultado);
             res.status(201).json(resultado);

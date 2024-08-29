@@ -11,9 +11,9 @@ const router = express.Router();
 
 router.post('/', [
     validarJWT,
-    check('IdAprendis', 'El ID del Aprendiz es obligatorio').not().isEmpty(),
-    check('IdAprendis', 'El ID del Aprendiz es inválido').isMongoId(),
-    check('IdAprendis').custom(aprendicesHelper.existeAprendizID),
+    check('cc', 'El número de cédula (cc) del aprendiz es obligatorio').not().isEmpty(),
+    check('cc', 'El número de cédula (cc) del aprendiz es inválido').isLength({ min: 10}), 
+    check('cc').custom(aprendicesHelper.verificarcc), 
     validarCampos
 ], bitacoraController.crearBitacora);
 
