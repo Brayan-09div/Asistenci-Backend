@@ -113,6 +113,8 @@ const bitacoraController = {
   
     listarPorFicha: async (req, res) => {
         const { IdFicha } = req.params;
+        console.log(IdFicha);
+        
         try {
             let array = [];
             const bitacoras = await Bitacora.find()
