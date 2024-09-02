@@ -10,7 +10,6 @@ const router = express.Router();
 
 
 router.post('/', [
-    validarJWT,
     check('cc', 'El número de cédula (cc) del aprendiz es obligatorio').not().isEmpty(),
     check('cc', 'El número de cédula (cc) del aprendiz es inválido').isLength({ min: 10}), 
     check('cc').custom(aprendicesHelper.verificarcc), 
@@ -43,6 +42,11 @@ router.get('/ListarAprendis/:idAprendis', [
 router.get('/ListarFicha/:IdFicha', [
     validarJWT
 ], bitacoraController.listarPorFicha);
+
+
+router.get('/ListarFichaFecha/:IdFicha/:fecha', [
+    validarJWT
+], bitacoraController.listarPorFichaYFecha);
 
 
 router.put('/ActualizarEstado/:id', [

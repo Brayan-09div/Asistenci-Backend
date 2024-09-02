@@ -175,7 +175,38 @@ const bitacoraController = {
             console.error('Error al actualizar el estado de la bitácora:', error);
             res.status(500).json({ error: 'Error al actualizar el estado de la bitácora' });
         }
-    }
+    },
+
+    listarPorFichaYFecha: async (req, res) => {
+        const { IdFicha, fecha } = req.params;
+
+        try {
+            const bitacoras = await Bitacora.find({
+                fecha: {
+                    $gte: new Date(fecha),
+                    $lt: new Date(new Date(fecha).setDate(new Date(fecha).getDate() + 1))
+                }
+            }).populate({
+                path: 'IdAprendis',
+                populate: { path: 'IdFicha' }
+            }).exec();
+
+            const bitacorasFiltradas = bitacoras.filter(bitacora => {
+                return bitacora?.IdAprendis?.IdFicha.toString() === IdFicha;
+            });
+
+            if (bitacorasFiltradas.length === 0) {
+                return res.status(404).json({ message: 'No se encontraron bitácoras para la ficha y fecha especificadas' });
+            }
+
+            console.log(`Lista de entradas de bitácora para la ficha ${IdFicha} en la fecha ${fecha}:`, bitacorasFiltradas);
+            res.json(bitacorasFiltradas);
+        } catch (error) {
+            console.error(`Error al listar las entradas de bitácora para la ficha ${IdFicha} en la fecha ${fecha}:`, error);
+            res.status(500).json({ error: 'Error al listar las entradas de bitácora por ficha y fecha' });
+        }
+    },
+
 };
 
 export default bitacoraController;
