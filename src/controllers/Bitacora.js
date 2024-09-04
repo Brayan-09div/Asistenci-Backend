@@ -179,34 +179,38 @@ const bitacoraController = {
 
     listarPorFichaYFecha: async (req, res) => {
         const { IdFicha, fecha } = req.params;
-
         try {
+            const fechaInicio = new Date(fecha);
+            const fechaFin = new Date(fechaInicio);
+            fechaFin.setDate(fechaFin.getDate() + 1);
             const bitacoras = await Bitacora.find({
                 fecha: {
-                    $gte: new Date(fecha),
-                    $lt: new Date(new Date(fecha).setDate(new Date(fecha).getDate() + 1))
+                    $gte: fechaInicio,
+                    $lt: fechaFin
                 }
             }).populate({
                 path: 'IdAprendis',
                 populate: { path: 'IdFicha' }
             }).exec();
-
+            console.log('Bitácoras encontradas:', bitacoras);
             const bitacorasFiltradas = bitacoras.filter(bitacora => {
-                return bitacora?.IdAprendis?.IdFicha.toString() === IdFicha;
+                const fichaId = bitacora?.IdAprendis?.IdFicha?._id;
+                console.log('IdFicha en bitácora:', fichaId);
+                return fichaId.equals(IdFicha);
             });
-
+            console.log('Bitácoras filtradas:', bitacorasFiltradas);
             if (bitacorasFiltradas.length === 0) {
+                console.log('No se encontraron bitácoras para la ficha y fecha especificadas');
                 return res.status(404).json({ message: 'No se encontraron bitácoras para la ficha y fecha especificadas' });
             }
-
-            console.log(`Lista de entradas de bitácora para la ficha ${IdFicha} en la fecha ${fecha}:`, bitacorasFiltradas);
             res.json(bitacorasFiltradas);
         } catch (error) {
-            console.error(`Error al listar las entradas de bitácora para la ficha ${IdFicha} en la fecha ${fecha}:`, error);
+            console.error('Error al listar las entradas de bitácora:', error);
             res.status(500).json({ error: 'Error al listar las entradas de bitácora por ficha y fecha' });
         }
     },
-
+    
+    
 };
 
 export default bitacoraController;
