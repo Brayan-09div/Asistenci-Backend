@@ -1,6 +1,7 @@
 import Usuario from "../models/Usuarios.js";
 import bcryptjs from "bcrypt";
 import { generarJWT } from "../middleware/validarJWT.js";
+import { sendEmail } from '../utils/mailer.js'; 
 
 const usuarioController = {
   // Crear un nuevo usuario------------------------------------------------------------------------
@@ -8,9 +9,8 @@ const usuarioController = {
     const { email, password, nombre, roles } = req.body;
    
     try {
-      console.log("req.usuario:", req.usuario); // Verifica si req.usuario está presente
-   
-      // Solo los administradores pueden crear usuarios
+      console.log("req.usuario:", req.usuario); 
+
       if (!req.usuario || !req.usuario.roles.includes("admin")) {
         return res
           .status(403)
@@ -183,6 +183,36 @@ editarUsuario: async (req, res) => {
       res.status(500).json({ error: "Error al activar/desactivar usuario" });
     }
   },
+
+  enviarEmail:async (req, res) => {
+    try {
+        const { email } = req.body;
+        await sendEmail(email);
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("Error en el controlador enviarEmail:", error);
+        res.status(500).json({ success: false, error: "Error al enviar el email" });
+    }
+},
+
+cambiarContraseñaEmail: async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const usuario = await Usuario.findOne({ email });   
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    const salt = bcryptjs.genSaltSync();
+    usuario.password = bcryptjs.hashSync(password, salt);
+    await usuario.save();
+    res.json({ msg: "Contraseña cambiada correctamente" });
+  } catch (error) {
+
+    console.error("Error al cambiar la contraseña:", error);
+    res.status(500).json({ error: "Error al cambiar contraseña" });
+  }
+}
+
 };
 
 export default usuarioController;

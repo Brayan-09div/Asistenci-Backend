@@ -7,7 +7,7 @@ import { usuarioHelper } from '../helpers/Usuarios.js';
 
 const router = express.Router();
 
-// Crear un nuevo usuario (solo administradores)
+
 router.post('/', [
     validarJWT,
     check('email', 'El email es obligatorio').not().isEmpty(),
@@ -17,7 +17,7 @@ router.post('/', [
     validarCampos
 ], usuarioController.crearUsuario);
 
-// Login (accesible para todos)
+
 router.post('/login', [
     check('email', 'El email es obligatorio').not().isEmpty(),
     check('email', 'El email no es válido').isEmail(),
@@ -25,10 +25,12 @@ router.post('/login', [
     validarCampos
 ], usuarioController.login);
 
-// Listar todos los usuarios (accesible para todos)
-router.get('/listar', usuarioController.listarUsuarios);
 
-// Editar un usuario por su ID (usuarios pueden editar solo su propia información, administradores pueden editar cualquier usuario)
+router.get('/listar',[
+    validarJWT
+], usuarioController.listarUsuarios);
+
+
 router.put('/editar/:id', [
     validarJWT,
     check('id', 'ID inválido').isMongoId(),
@@ -37,7 +39,6 @@ router.put('/editar/:id', [
     validarCampos
 ], usuarioController.editarUsuario);
 
-// Cambiar la contraseña de un usuario por su ID (usuarios pueden cambiar solo su propia contraseña, administradores pueden cambiar cualquier contraseña)
 router.put('/cambiarContrasena/:id', [
     validarJWT,
     check('id', 'ID inválido').isMongoId(),
@@ -45,18 +46,34 @@ router.put('/cambiarContrasena/:id', [
     validarCampos
 ], usuarioController.cambiarContraseña);
 
-// Activar o desactivar un usuario por su ID (solo administradores)
+
 router.put('/activarDesactivar/:id', [
     validarJWT,
     check('id', 'ID inválido').isMongoId(),
     validarCampos
 ], usuarioController.activarDesactivarUsuario);
 
-// Eliminar un usuario por su ID (solo administradores)
+
 router.delete('/eliminar/:id', [
     validarJWT,
     check('id', 'ID inválido').isMongoId(),
     validarCampos
 ], usuarioController.eliminarUsuario);
+
+
+router.post('/recuperarpassword', [
+    check('email', 'El email es obligatorio').not().isEmpty(),
+    check('email').custom(usuarioHelper.verificarEmail),
+    validarCampos
+], usuarioController.enviarEmail);
+
+router.put('/cambiarContrasenaEmail', [
+    check('email', 'El email es obligatorio').not().isEmpty(),
+    check('email', 'El email no es válido').isEmail(),
+    check('password', 'La contraseña debe tener al menos 8 caracteres').isLength({ min: 8 }),
+    validarCampos
+  ], usuarioController.cambiarContraseñaEmail);
+  
+
 
 export default router;
